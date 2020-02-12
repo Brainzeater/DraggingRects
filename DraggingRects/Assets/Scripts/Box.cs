@@ -9,6 +9,10 @@ public class Box : MonoBehaviour
     private bool _doubleClickCounterStarted;
 
     private bool _selected;
+    
+    // Distance between cursor and box center at the start of dragging
+    // This variable enables dragging by any point of the box
+    private Vector2 _cursorCenterDistance;
 
     void Awake()
     {
@@ -29,6 +33,7 @@ public class Box : MonoBehaviour
         if (!_doubleClickCounterStarted)
         {
             _selected = true;
+            _cursorCenterDistance = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
             StartCoroutine(DoubleClickCounter());
         }
         else
@@ -48,7 +53,7 @@ public class Box : MonoBehaviour
         if (_selected)
         {
             Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            transform.position = cursorPosition;
+            transform.position = cursorPosition - _cursorCenterDistance;
         }
     }
 
