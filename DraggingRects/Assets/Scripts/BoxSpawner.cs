@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class BoxSpawner : MonoBehaviour
 {
-    public static GameManager _instance;
-    public static GameManager Instance => _instance;
+    public static BoxSpawner _instance;
+    public static BoxSpawner Instance => _instance;
 
     public GameObject box;
     public BoxSize size;
     public LayerMask layer;
-    
+
     private GameObject _camera;
     private Vector2 _screenBounds;
 
@@ -33,14 +33,14 @@ public class GameManager : MonoBehaviour
         _camera = GameObject.FindGameObjectWithTag("MainCamera");
         _screenBounds = _camera.GetComponent<Camera>()
             .ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, _camera.transform.position.z));
+
+        // Set object's scale to screen bounds
+        gameObject.transform.localScale = _screenBounds * 2;
     }
 
-    void Update()
+    void OnMouseDown()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            CheckSpace();
-        }
+        CheckSpace();
     }
 
     /*
@@ -50,20 +50,17 @@ public class GameManager : MonoBehaviour
     {
         Vector2 pointerPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (!Physics2D.Raycast(pointerPosition, Vector2.zero))
-        {
-            // Rectangular area coordinates of box around clicked point
-            Vector2 pointA = new Vector2(pointerPosition.x - size.width / 2, pointerPosition.y - size.height / 2);
-            Vector2 pointB = new Vector2(pointerPosition.x + size.width / 2, pointerPosition.y + size.height / 2);
+        // Rectangular area coordinates of box around clicked point
+        Vector2 pointA = new Vector2(pointerPosition.x - size.width / 2, pointerPosition.y - size.height / 2);
+        Vector2 pointB = new Vector2(pointerPosition.x + size.width / 2, pointerPosition.y + size.height / 2);
 
-            // Box can be spawned when area around click is not overlapping with other boxes
-            // and is inside of the screen bounds
-            if (!Physics2D.OverlapArea(pointA, pointB, layer) &&
-                (pointA.x >= -_screenBounds.x && pointB.x <= _screenBounds.x &&
-                 pointA.y >= -_screenBounds.y && pointB.y <= _screenBounds.y))
-            {
-                SpawnBox(pointerPosition);
-            }
+        // Box can be spawned when area around click is not overlapping with other boxes
+        // and is inside of the screen bounds
+        if (!Physics2D.OverlapArea(pointA, pointB, layer) &&
+            (pointA.x >= -_screenBounds.x && pointB.x <= _screenBounds.x &&
+             pointA.y >= -_screenBounds.y && pointB.y <= _screenBounds.y))
+        {
+            SpawnBox(pointerPosition);
         }
     }
 
