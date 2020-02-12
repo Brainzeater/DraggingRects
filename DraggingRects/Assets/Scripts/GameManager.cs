@@ -9,8 +9,10 @@ public class GameManager : MonoBehaviour
 
     public GameObject box;
     public BoxSize size;
-
     public LayerMask layer;
+    
+    private GameObject _camera;
+    private Vector2 _screenBounds;
 
     void Awake()
     {
@@ -23,6 +25,14 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    void Start()
+    {
+        // Set screen bounds
+        _camera = GameObject.FindGameObjectWithTag("MainCamera");
+        _screenBounds = _camera.GetComponent<Camera>()
+            .ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, _camera.transform.position.z));
     }
 
     void Update()
@@ -42,11 +52,15 @@ public class GameManager : MonoBehaviour
 
         if (!Physics2D.Raycast(pointerPosition, Vector2.zero))
         {
-            // Rectangular area coordinates
+            // Rectangular area coordinates of box around clicked point
             Vector2 pointA = new Vector2(pointerPosition.x - size.width / 2, pointerPosition.y - size.height / 2);
             Vector2 pointB = new Vector2(pointerPosition.x + size.width / 2, pointerPosition.y + size.height / 2);
 
-            if (!Physics2D.OverlapArea(pointA, pointB, layer))
+            // Box can be spawned when area around click is not overlapping with other boxes
+            // and is inside of the screen bounds
+            if (!Physics2D.OverlapArea(pointA, pointB, layer) &&
+                (pointA.x >= -_screenBounds.x && pointB.x <= _screenBounds.x &&
+                 pointA.y >= -_screenBounds.y && pointB.y <= _screenBounds.y))
             {
                 SpawnBox(pointerPosition);
             }
