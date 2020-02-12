@@ -11,7 +11,6 @@ public class BoxSpawner : MonoBehaviour
     public BoxSize size;
     public LayerMask layer;
 
-    private GameObject _camera;
     private Vector2 _screenBounds;
 
     void Awake()
@@ -30,9 +29,8 @@ public class BoxSpawner : MonoBehaviour
     void Start()
     {
         // Set screen bounds
-        _camera = GameObject.FindGameObjectWithTag("MainCamera");
-        _screenBounds = _camera.GetComponent<Camera>()
-            .ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, _camera.transform.position.z));
+        _screenBounds = Camera.main.GetComponent<Camera>()
+            .ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
 
         // Set object's scale to screen bounds
         gameObject.transform.localScale = _screenBounds * 2;
@@ -69,6 +67,6 @@ public class BoxSpawner : MonoBehaviour
         GameObject boxGameObject = Instantiate(box, position, Quaternion.identity);
 
         // Set size of created box
-        boxGameObject.transform.localScale = new Vector3(size.width, size.height, 1f);
+        boxGameObject.transform.localScale = new Vector2(size.width, size.height);
     }
 }

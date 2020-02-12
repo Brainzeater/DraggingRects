@@ -8,6 +8,8 @@ public class Box : MonoBehaviour
     private const float DoubleClickInterval = 0.5f;
     private bool _doubleClickCounterStarted;
 
+    private bool _selected;
+
     void Awake()
     {
         // Random color assignment
@@ -18,18 +20,35 @@ public class Box : MonoBehaviour
 
         _doubleClickCounterStarted = false;
         Debug.Log($"Hello from {GetInstanceID()}");
+
+        _selected = false;
     }
 
     void OnMouseDown()
     {
         if (!_doubleClickCounterStarted)
         {
+            _selected = true;
             StartCoroutine(DoubleClickCounter());
         }
         else
         {
             // Double-click detected
             Destroy(this.gameObject);
+        }
+    }
+
+    void OnMouseUp()
+    {
+        _selected = false;
+    }
+
+    void Update()
+    {
+        if (_selected)
+        {
+            Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            transform.position = cursorPosition;
         }
     }
 
