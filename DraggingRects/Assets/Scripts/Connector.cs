@@ -109,7 +109,7 @@ public class Connector : MonoBehaviour
         lineRenderer.endColor = GetComponent<SpriteRenderer>().color;
         LineCollection.Add(
             new ConnectionAndRole(lineRenderer, Role.End, connectionStart.gameObject.GetInstanceID()));
-        
+
         // To disable destruction on dragging right after the connection
         GetComponent<Box>().ResetDoubleClickTimer();
     }

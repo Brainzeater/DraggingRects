@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 /*
- * Enables box dragging
+ * Enables box dragging on cursor down,
+ * collision with other boxes and borders
+ * and box destruction on double-click.
+ * Assigns a random color on creation.
  */
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -32,7 +34,6 @@ public class Box : MonoBehaviour
             Random.Range(0f, 1f));
 
         _doubleClickTimerStarted = false;
-        Debug.Log($"Hello from {GetInstanceID()}");
 
         _rigidbody = GetComponent<Rigidbody2D>();
     }
@@ -51,7 +52,6 @@ public class Box : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
 
     void OnMouseDrag()
     {
@@ -89,7 +89,7 @@ public class Box : MonoBehaviour
 
     void OnMouseUp()
     {
-        // Reset rigid body to  
+        // Stop box movement and make it unmovable
         _rigidbody.velocity = Vector2.zero;
         _rigidbody.bodyType = RigidbodyType2D.Static;
     }
@@ -105,11 +105,6 @@ public class Box : MonoBehaviour
         _doubleClickTimerStarted = true;
         yield return new WaitForSeconds(DoubleClickInterval);
         _doubleClickTimerStarted = false;
-    }
-
-    void OnDestroy()
-    {
-        Debug.Log($"Goodbye from {GetInstanceID()}");
     }
 
     public void ResetDoubleClickTimer()
