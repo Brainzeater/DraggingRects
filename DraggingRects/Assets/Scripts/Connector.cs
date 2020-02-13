@@ -44,6 +44,12 @@ public class Connector : MonoBehaviour
 
     void OnMouseDown()
     {
+        // Clear the list from null lines (when they were destroyed by the other box)
+        if (LineCollection.Any())
+        {
+            LineCollection.RemoveAll(item => item.line == null);
+        }
+
         if (Input.GetKey(key))
         {
             if (selectedBoxCounter < 1)
@@ -58,12 +64,6 @@ public class Connector : MonoBehaviour
                 CheckConnection();
                 selectedBoxCounter = 0;
             }
-        }
-
-        // Clear the list from null lines (when they were destroyed by the other box)
-        if (LineCollection.Any())
-        {
-            LineCollection.RemoveAll(item => item.line == null);
         }
     }
 
@@ -90,6 +90,9 @@ public class Connector : MonoBehaviour
             // Destroy the connection and remove it from the list
             Destroy(LineCollection.Find(item => item.otherSideId == connectionID).line.gameObject);
             LineCollection.RemoveAll(item => item.otherSideId == connectionID);
+
+            // To disable destruction on dragging right after removal of the connection
+            GetComponent<Box>().ResetDoubleClickTimer();
         }
     }
 
