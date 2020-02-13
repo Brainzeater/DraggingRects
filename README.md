@@ -1,5 +1,8 @@
 # DraggingRects
 
+### WebGL version on GitHub Pages:
+https://brainzeater.github.io/DraggingRects-WebGL/
+
 ### Controls:
 - Click to create a box
 - Hold the mouse button to drag a box
