@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+/*
+ * Enables box dragging
+ */
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
 public class Box : MonoBehaviour
 {
     private const float DoubleClickInterval = 0.5f;
-    private bool _doubleClickCounterStarted;
+    private bool _doubleClickTimerStarted;
 
     private const float DragSpeed = 30f;
     private const float DragMaxSpeed = 80f;
@@ -28,7 +31,7 @@ public class Box : MonoBehaviour
             Random.Range(0f, 1f),
             Random.Range(0f, 1f));
 
-        _doubleClickCounterStarted = false;
+        _doubleClickTimerStarted = false;
         Debug.Log($"Hello from {GetInstanceID()}");
 
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -36,11 +39,11 @@ public class Box : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (!_doubleClickCounterStarted)
+        if (!_doubleClickTimerStarted)
         {
             // Save relative position of mouse click point to the box center
             _cursorCenterOffsetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-            StartCoroutine(DoubleClickCounter());
+            StartCoroutine(DoubleClickTimer());
         }
         else
         {
@@ -52,9 +55,14 @@ public class Box : MonoBehaviour
 
     void OnMouseDrag()
     {
+        DragBox();
+    }
+
+    void DragBox()
+    {
         // Enable box to be movable by velocity
         _rigidbody.bodyType = RigidbodyType2D.Dynamic;
-        
+
         // Keep the cursor offset
         Vector3 boxWithCursorOffsetPosition = transform.position + _cursorCenterOffsetPosition;
 
@@ -85,17 +93,28 @@ public class Box : MonoBehaviour
         _rigidbody.velocity = Vector2.zero;
         _rigidbody.bodyType = RigidbodyType2D.Static;
     }
-    
-    // Double click interval timer
-    private IEnumerator DoubleClickCounter()
+
+    void OnMouseExit()
     {
-        _doubleClickCounterStarted = true;
+        ResetDoubleClickTimer();
+    }
+
+    // Double click interval timer
+    private IEnumerator DoubleClickTimer()
+    {
+        _doubleClickTimerStarted = true;
         yield return new WaitForSeconds(DoubleClickInterval);
-        _doubleClickCounterStarted = false;
+        _doubleClickTimerStarted = false;
     }
 
     void OnDestroy()
     {
         Debug.Log($"Goodbye from {GetInstanceID()}");
+    }
+
+    public void ResetDoubleClickTimer()
+    {
+        StopCoroutine(DoubleClickTimer());
+        _doubleClickTimerStarted = false;
     }
 }

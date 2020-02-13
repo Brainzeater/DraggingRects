@@ -10,6 +10,7 @@ using UnityEngine;
  * Repeat of the connection destroys the existing one.
  * Connections are destroyed with the boxes they belong to.
  */
+[RequireComponent(typeof(Box))]
 public class Connector : MonoBehaviour
 {
     // Stores the number of boxes selected for the connection
@@ -108,8 +109,9 @@ public class Connector : MonoBehaviour
         lineRenderer.endColor = GetComponent<SpriteRenderer>().color;
         LineCollection.Add(
             new ConnectionAndRole(lineRenderer, Role.End, connectionStart.gameObject.GetInstanceID()));
-
-        // TODO: Reset double-click
+        
+        // To disable destruction on dragging right after the connection
+        GetComponent<Box>().ResetDoubleClickTimer();
     }
 
     void OnMouseDrag()
