@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class Box : MonoBehaviour
 {
     private const float DoubleClickInterval = 0.5f;
