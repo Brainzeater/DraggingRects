@@ -2,16 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider2D))]
 public class BoxSpawner : MonoBehaviour
 {
     public static BoxSpawner _instance;
     public static BoxSpawner Instance => _instance;
 
+    [Header("Box settings")]
     public GameObject box;
     public BoxSize size;
     public LayerMask layer;
+    // To keep the scene tidy:
+    // boxParent stores prefab instances in a single game object
+    public Transform boxParent;
 
-    private GameObject _camera;
+    [Header("Spawner settings")]
+    public float boundaryRadius;
+    public GameObject topBoundary;
+    public GameObject bottomBoundary;
+    public GameObject leftBoundary;
+    public GameObject rightBoundary;
+
     private Vector2 _screenBounds;
 
     void Awake()
@@ -30,12 +41,13 @@ public class BoxSpawner : MonoBehaviour
     void Start()
     {
         // Set screen bounds
-        _camera = GameObject.FindGameObjectWithTag("MainCamera");
-        _screenBounds = _camera.GetComponent<Camera>()
-            .ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, _camera.transform.position.z));
+        _screenBounds = Camera.main.GetComponent<Camera>()
+            .ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
 
-        // Set object's scale to screen bounds
+        // Set spawner's scale to screen bounds
         gameObject.transform.localScale = _screenBounds * 2;
+
+        SetupBoundaries();
     }
 
     void OnMouseDown()
@@ -66,9 +78,28 @@ public class BoxSpawner : MonoBehaviour
 
     void SpawnBox(Vector2 position)
     {
-        GameObject boxGameObject = Instantiate(box, position, Quaternion.identity);
+        GameObject boxGameObject = Instantiate(box, position, Quaternion.identity, boxParent);
 
         // Set size of created box
-        boxGameObject.transform.localScale = new Vector3(size.width, size.height, 1f);
+        boxGameObject.transform.localScale = new Vector2(size.width, size.height);
+    }
+
+    void SetupBoundaries()
+    {
+        // Vertical Boundaries
+        float yPosition = _screenBounds.y + boundaryRadius;
+        float yRatio = boundaryRadius / _screenBounds.y;
+        topBoundary.transform.position = new Vector2(0f, yPosition);
+        topBoundary.transform.localScale = new Vector2(topBoundary.transform.localScale.x, yRatio);
+        bottomBoundary.transform.position = new Vector2(0f, -yPosition);
+        bottomBoundary.transform.localScale = new Vector2(bottomBoundary.transform.localScale.x, yRatio);
+
+        // Horizontal Boundaries
+        float xPosition = _screenBounds.x + boundaryRadius;
+        float xRatio = boundaryRadius / _screenBounds.x;
+        leftBoundary.transform.position = new Vector2(-xPosition, 0f);
+        leftBoundary.transform.localScale = new Vector2(xRatio, leftBoundary.transform.localScale.y);
+        rightBoundary.transform.position = new Vector2(xPosition, 0f);
+        rightBoundary.transform.localScale = new Vector2(xRatio, rightBoundary.transform.localScale.y);
     }
 }
