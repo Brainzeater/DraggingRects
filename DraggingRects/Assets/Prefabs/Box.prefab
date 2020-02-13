@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1148756521374307140}
   - component: {fileID: 2429362780122274688}
   - component: {fileID: 7984483744137970954}
+  - component: {fileID: 2558939878669708489}
   m_Layer: 8
   m_Name: Box
   m_TagString: Untagged
@@ -45,7 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daa0160367d62954393630f2efcec11a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: {fileID: 11400000, guid: 27627fcd0c22cac469620b28a95e232e, type: 2}
 --- !u!212 &2429362780122274688
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -122,3 +122,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &2558939878669708489
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18528160355409587}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 0.0001
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 4
